@@ -1,6 +1,6 @@
 
-from tdas import cola
-from tdas import pila
+from TDAcola import cola
+from TDApila import Pila
 import grafo
 
 """
@@ -84,6 +84,13 @@ def obtener_aristas(grafo):#o(V+E)
         for w in grafo.adyacentes(v):
             aristas.append((v,w,grafo.peso_arista(v,w)))
     return aristas
+
+def reconstruir_camino(padre, destino):
+    recorrido = []
+    while destino is not None:
+        recorrido.append(destino)
+        destino = padre[destino]
+    return recorrido[::-1]
     
 "componentes fuertemente conexas TARJAN "
 def cfc_tarjan(grafo): #O(V+E)
@@ -92,14 +99,14 @@ def cfc_tarjan(grafo): #O(V+E)
     contador_global = [0]
     for v in grafo.obtener_vertices():
         if v not in visitados:
-            _dfs_cfc(grafo, v, visitados, {},{}, pila.Pila(), set(), cfc,contador_global)
+            _dfs_cfc(grafo, v, visitados, {},{}, Pila(), set(), cfc,contador_global)
     return cfc
 
 def _dfs_cfc(grafo, v, visitados, orden, mas_bajo, pila, apilados, cfc, contador_global):
     orden[v] = mas_bajo[v] = contador_global[0]
     contador_global[0] += 1
     visitados.add(v)
-    pila.Apilar(v)
+    pila.apilar(v)
     apilados.add(v)
 
     for w in grafo.adyacentes(v):
@@ -111,12 +118,21 @@ def _dfs_cfc(grafo, v, visitados, orden, mas_bajo, pila, apilados, cfc, contador
     if mas_bajo[v] == orden[v]:
         nueva_cfc = []
         while True:
-            w = pila.Desapilar()
+            w = pila.desapilar()
             apilados.remove(w)
             nueva_cfc.append(w)
             if w == v:
                 break
         cfc.append(nueva_cfc)
+
+
+
+
+
+
+
+
+
 
 
 
