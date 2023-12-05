@@ -1,7 +1,4 @@
-
-from TDAcola import cola
-from TDApila import Pila
-import grafo
+from TDAS import Cola,Grafo,Pila
 
 """
 Una biblioteca de funciones de grafos, que permitan hacer distintas operaciones sobre un grafo que modela Internet, 
@@ -11,28 +8,30 @@ grafo que tenga las características de las de este TP (particularmente, dirigid
 """
 
 
-def _bfs(grafo, origen, padre, visitados, distancia): #o(V+E)
-    colas =  cola.CrearColaEnlazada()
+def _bfs(grafo: Grafo, origen, padres, visitados, distancias): #o(V+E)
+    cola =  Cola()
     cola.Encolar(origen)
-    padre[origen] = None
+    padres[origen] = None
     visitados.add(origen)
-    distancia[origen] = 0
+    distancias[origen] = 0
     while not cola.EstaVacia():
         v = cola.Desencolar()
         for w in grafo.adyacentes(v):
             if w not in visitados:
                 visitados.add(w)
-                padre[w] = v
-                distancia[w] = distancia[v] + 1
+                padres[w] = v
+                distancias[w] = distancias[v] + grafo.peso_arista(v,w)
                 cola.Encolar(w)
 
-def _dfs(grafo, v, visitados,  padre, distancia): #o(V+E)
+    return distancias, padres
+
+def _dfs(grafo, v, visitados,  padres, distancias): #o(V+E)
     for w in grafo.adyacentes(v):
         if w not in visitados:
             visitados.add(w)
-            padre[w] = v
-            distancia[w] = distancia[v] + 1
-            _dfs(grafo, w, visitados,  padre, distancia)
+            padres[w] = v
+            distancias[w] = distancias[v] + grafo.peso_arista(v,w)
+            _dfs(grafo, w, visitados,  padres, distancias)
 
 "orden topologico basado en grados de entrada"
 def orden_topologico(grafo): #o(V+E)
