@@ -1,5 +1,6 @@
-from funciones_auxiliares import *
+from funciones_inicializacion import *
 from TDAS.Grafo import Grafo
+from NetStats import *
 import sys
 
 g = cargar_grafo()
@@ -25,8 +26,20 @@ def main(grafo):
         listado_operaciones()
 
     elif comando == CAMINO_MAS_CORTO:
+        origen = parametros[0]
+        destino = parametros[1]
+
+        recorrido = camino_minimo(grafo, origen, destino)
+        if recorrido == None:
+            print("No se encontro recorrido")
+        else:
+            print() #no se como printear las ->
+            print("Costo: ", len(recorrido) - 1)
 
     elif comando == DIAMETRO:
+        recorrido, diam = diametroRed(grafo)
+        print() #no se como printear las ->
+        print("Costo: ", diam)
 
     elif comando == TODOS_EN_RANGO:
 
