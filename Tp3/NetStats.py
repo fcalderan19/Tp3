@@ -102,3 +102,49 @@ def clustering(grafo, pagina):
     else:
         clustering_promedio= calcular_clustering_promedio(grafo)
         print(f"El clustering promedio de la red es:{clustering_promedio:.3f}")
+
+
+
+"""
+Coeficiente de Clustering:
+por cada par de adyacentes al vértice en cuestión, si existe la arista yendo de uno al otro (si además está la recíproca, lo contamos
+otra vez). A esa cantidad de aristas lo dividimos por K(K-1) siendo K  el grado de salida del vértice i. En caso de tener menos
+de 2 adyacentes, se define que el coeficiente de clustering de dicho vértice es 0. Considerar que el coeficiente de clustering 
+es siempre un número entre 0 y 1.
+
+Permite obtener el coeficiente de clustering de la página indicada. En caso de no indicar página, se deberá informar el clustering promedio 
+de la red. En ambos casos, informar con hasta 3 dígitos decimales.
+"""
+
+def contar_aristas_vecinos(grafo: Grafo, vecinos):
+    """ toma una lista de nodos vecinos y cuenta cuántas aristas existen entre esos nodos."""
+    contador = 0
+
+    for i in range (len(vecinos)):
+        for j in range(i+1, len(vecinos)):
+            if grafo.estan_unidos(vecinos[i], vecinos[j]):
+                contador += 1
+    return contador 
+
+
+def calcular_clustering_pagina(grafo: Grafo, pagina):
+    vecinos = grafo.adyacentes(pagina)
+    cantidad_enlaces = contar_aristas_vecinos(grafo, vecinos)
+    g_salida = grados_salida(grafo)[pagina]
+    if g_salida < 2:
+        return 0.0
+    else:
+        return 2.0 * cantidad_enlaces / (g_salida *(g_salida - 1))
+
+def calcular_clustering_promedio(grafo: Grafo):
+    """calculo el clustering promedio de la red"""
+    clustering_total = 0.0
+    vertices = grafo.obtener_vertices()
+    for nodo in vertices:
+        clustering_total += calcular_clustering_pagina(grafo, nodo)
+    
+    if not vertices:
+        return 0.0
+    else: 
+        return clustering_total / len(vertices)
+
