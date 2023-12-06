@@ -49,16 +49,20 @@ def main(grafo):
         pagina = parametros[0]
         print(" -> ".join(navegacion(grafo, pagina)))    
 
-    #elif comando == CONECTIVIDAD:
+    elif comando == CONECTIVIDAD:
+        pagina = parametros[0]
+        dicc_paginas = {}
+        conectados(grafo, pagina, dicc_paginas)
 
-    #elif comando == LECTURA_A_LAS_2_AM:
+    elif comando == LECTURA_A_LAS_2_AM:
+        paginas = parametros
+        lectura_orden(grafo, paginas)
 
-    #elif comando == COMUNIDADES:
+    elif comando == COMUNIDADES:
+        comunidad(grafo, pagina)
 
-    #elif comando == ARTICULOS_MAS_IMPORTANTES:
-
-    #elif comando == CICLO_DE_N_ARTICULOS:
-
+    elif comando == CLUSTERING:
+        clustering(grafo, pagina)
 
 if __name__ == '__main__':
     stdin = sys.argv
