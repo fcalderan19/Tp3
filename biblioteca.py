@@ -1,10 +1,7 @@
-
-from TDAS.Cola import Cola
-from TDAS.Pila import Pila
-from TDAS.Grafo import Grafo
+from TDAS import Cola,Grafo,Pila
 import random
-
 CANT_ITERACIONES = 10
+
 """
 Una biblioteca de funciones de grafos, que permitan hacer distintas operaciones sobre un grafo que modela Internet, 
 sin importar cuál es la red específica.
@@ -12,7 +9,8 @@ la biblioteca de funciones debe funcionar para aplicar cualquiera de las funcion
 grafo que tenga las características de las de este TP (particularmente, dirigido y no pesado)
 """
 
-def bfs(grafo: Grafo, origen, padres, visitados, distancias): #o(V+E)
+
+def bfs(grafo: Grafo, origen, padres, visitados, distancias): #O(V + E)
     cola =  Cola()
     cola.Encolar(origen)
     padres[origen] = None
@@ -29,13 +27,14 @@ def bfs(grafo: Grafo, origen, padres, visitados, distancias): #o(V+E)
 
     return distancias, padres
 
-def dfs(grafo: Grafo, v, visitados,  padre, distancia): #o(V+E)
+def dfs(grafo, v, visitados,  padres, distancias): #O(V + E)
     for w in grafo.adyacentes(v):
         if w not in visitados:
             visitados.add(w)
-            padre[w] = v
-            distancia[w] = distancia[v] + grafo.peso_arista(v,w)
-            dfs(grafo, w, visitados,  padre, distancia)
+            padres[w] = v
+            distancias[w] = distancias[v] + grafo.peso_arista(v,w)
+            dfs(grafo, w, visitados,  padres, distancias)
+
 
 "orden topologico basado en grados de entrada"
 def orden_topologico(grafo: Grafo): #o(V+E)
