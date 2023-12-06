@@ -132,21 +132,4 @@ def _dfs_cfc(grafo: Grafo, v, visitados, orden, mas_bajo, pila: Pila, apilados, 
             if w == v:
                 break
         cfc.append(nueva_cfc)
-
-
-#https://algoritmos-rw.github.io/algo2/material/apuntes/label_propagation/
-def label_propagation(grafo: Grafo):
-    etiquetas = {v : v for v in grafo.obtener_vertices()}
-    for _ in range (CANT_ITERACIONES):
-        vertices = list(grafo.obtener_vertices())
-        random.shuffle(vertices)
-
-        for v in vertices:
-            vecinos = grafo.adyacentes(v)
-            if vecinos:
-                etiquetas_vecino= [etiquetas[w] for w in vecinos] #obtengo las etiquetas de los vecinos
-                etiquetas[v]= max(set(etiquetas_vecino), key= etiquetas_vecino.count) #asigno la etiqueta mas comun al nodo actual
-    return etiquetas
                 
-
-
