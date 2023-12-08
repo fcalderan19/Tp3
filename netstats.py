@@ -1,6 +1,6 @@
 from funciones_inicializacion import *
-from Grafo import *
-from comandos import *
+from TDAS.Grafo import Grafo
+from NetStats import *
 import sys
 
 #Lista de operaciones
@@ -52,11 +52,11 @@ def main(grafo):
 
         elif comando == CONECTIVIDAD:
             pagina = parametros[0]
-            dicc_paginas = {}
-            conectados(grafo, pagina, dicc_paginas)
+            dicc_paginas = {} #yo lo que quiero hacer es crear un dicc y ir almacenando las paginas que ya pusieron anteriormente, asi dsp es o(1)
+            conectados(grafo, pagina, dicc_paginas) # pero yo lo estoy almacenando aca dentro de la funcion... esta bien?
 
         elif comando == LECTURA_A_LAS_2_AM:
-            paginas = parametros
+            paginas = parametros #el usuario puede poner la cantidad de paginas que quiera como parametro
             lectura_orden(grafo, paginas)
 
         elif comando == COMUNIDADES:

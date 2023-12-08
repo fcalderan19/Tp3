@@ -1,4 +1,4 @@
-from Grafo import *
+from TDAS.Grafo import Grafo
 import sys
 
 def cargar_grafo():
@@ -19,25 +19,26 @@ def cargar_grafo():
     return grafo
 
 def leer_linea(linea):
-    linea = linea.rstrip("\n")
-    terminal = linea.split(" ", 1)
+    terminal = terminal.rstrip().split(" ")
     comando = terminal[0]
-    if len(terminal) > 1:
-        parametros = terminal[1]
-        return comando, parametros
+    parametros = terminal[1:]
 
-    return comando, None
+    parametros = " ".join(parametros).split(",")
+    for i in range(len(parametros)):
+        parametros[i] = parametros[i].lstrip()
+
+    return comando, parametros
 
 
 def listado_operaciones():
-    print("camino")
-    print("diametro")
-    print("ciclo") 
-    print("navegacion") 
+    print("camino") 
     print("mas_importantes") 
     print("conectados") 
+    print("ciclo") 
     print("lectura") 
+    print("diametro")  
     print("rango") 
     print("comunidad")
+    print("navegacion") 
     print("clustering") 
 
