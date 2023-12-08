@@ -14,8 +14,9 @@ NAVEGACION_POR_PRIMER_LINK = "navegacion"
 CONECTIVIDAD = "conectados"
 LECTURA_A_LAS_2_AM = "lectura"
 COMUNIDADES = "comunidad"
-ARTICULOS_MAS_IMPORTANTES = "mas_importantes"
-CICLO_DE_N_ARTICULOS = "ciclo"
+#ARTICULOS_MAS_IMPORTANTES = "mas_importantes"
+#CICLO_DE_N_ARTICULOS = "ciclo"
+CLUSTERING = "clustering"
 
 
 def main(grafo):
@@ -29,7 +30,7 @@ def main(grafo):
         origen = parametros[0]
         destino = parametros[1]
 
-        recorrido = camino_minimo(grafo, origen, destino)
+        recorrido = camino(grafo, origen, destino)
         if recorrido == None:
             print("No se encontro recorrido")
         else:
@@ -41,34 +42,41 @@ def main(grafo):
         print() #no se como printear las ->
         print("Costo: ", diam)
 
-    elif comando == TODOS_EN_RANGO:
-
-    elif comando == NAVEGACION_POR_PRIMER_LINK:
-
     elif comando == CONECTIVIDAD:
+        pagina = parametros[0]
+        dicc_paginas = dicc_paginas if "dicc_paginas" in locals() else {} 
+        conectados(grafo, pagina, dicc_paginas) 
 
     elif comando == LECTURA_A_LAS_2_AM:
-
+        paginas = parametros #el usuario puede poner la cantidad de paginas que quiera como parametro
+        lectura_orden(grafo, paginas)
     elif comando == COMUNIDADES:
+        comunidad(grafo, pagina)
 
-    elif comando == ARTICULOS_MAS_IMPORTANTES:
-
-    elif comando == CICLO_DE_N_ARTICULOS:
+    elif comando == CLUSTERING:
+        clustering(grafo, pagina)
 
     else: None
 
+if __name__ == '__main__':
+    stdin = sys.argv
+    if len(stdin) != 2:
+        raise Exception("Parametros invalidos")
 
-
-
-
-
-
-    
-
-
-
-
-
-
-
-main(g)
+    grafo = Grafo(dirigido = True)
+    archivo = sys.argv[1]
+    with open(archivo, 'r') as tsv:
+        for line in tsv:
+            line = line.rstrip("\n")
+            datos = line.split('\t')
+            articulo = datos[0]
+            links = datos[1:]
+            if not grafo.verticeExistente(articulo):
+                grafo.agregar_vertice(articulo)
+            for link in links:
+                if not grafo.verticeExistente(link):
+                    grafo.agregar_vertice(link)
+                if not grafo.estan_unidos(articulo, link):
+                    grafo.agregar_arista(articulo, link, 1)
+                
+    main(grafo)
