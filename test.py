@@ -12,9 +12,9 @@ NAVEGACION_POR_PRIMER_LINK = "navegacion"
 CONECTIVIDAD = "conectados"
 LECTURA_A_LAS_2_AM = "lectura"
 COMUNIDADES = "comunidad"
+CLUSTERING = "clustering"
 ARTICULOS_MAS_IMPORTANTES = "mas_importantes"
 CICLO_DE_N_ARTICULOS = "ciclo"
-
 
 def main(grafo):
     for linea in sys.stdin:
@@ -47,8 +47,8 @@ def main(grafo):
             print(rango(grafo, pagina, range))
 
         elif comando == NAVEGACION_POR_PRIMER_LINK:
-            pagina = parametros
-            print(" -> ".join(navegacion(grafo, pagina)))    
+            paginas = parametros.split(",")
+            print(" -> ".join(navegacion(grafo, paginas)))    
 
         elif comando == CONECTIVIDAD:
             pagina = parametros[0]
@@ -56,8 +56,9 @@ def main(grafo):
             conectados(grafo, pagina, dicc_paginas) 
 
         elif comando == LECTURA_A_LAS_2_AM:
-            paginas = parametros #el usuario puede poner la cantidad de paginas que quiera como parametro
+            paginas = parametros
             lectura_orden(grafo, paginas)
+            
         elif comando == COMUNIDADES:
             comunidad(grafo, pagina)
 
@@ -74,7 +75,7 @@ if __name__ == '__main__':
 
     grafo = Grafo(dirigido = True)
     #archivo = sys.argv[1]
-    with open("wiki-reducido-75000.tsv", 'r') as tsv:
+    with open("wiki-reducido-5000.tsv", 'r') as tsv:
         for line in tsv:
             line = line.rstrip("\n")
             datos = line.split('\t')
