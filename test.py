@@ -50,15 +50,21 @@ def main(grafo):
             pagina = parametros
             print(" -> ".join(navegacion(grafo, pagina)))    
 
-        #elif comando == CONECTIVIDAD:
+        elif comando == CONECTIVIDAD:
+            pagina = parametros[0]
+            dicc_paginas = dicc_paginas if "dicc_paginas" in locals() else {} 
+            conectados(grafo, pagina, dicc_paginas) 
 
-        #elif comando == LECTURA_A_LAS_2_AM:
+        elif comando == LECTURA_A_LAS_2_AM:
+            paginas = parametros #el usuario puede poner la cantidad de paginas que quiera como parametro
+            lectura_orden(grafo, paginas)
+        elif comando == COMUNIDADES:
+            comunidad(grafo, pagina)
 
-        #elif comando == COMUNIDADES:
+        elif comando == CLUSTERING:
+            clustering(grafo, pagina)
 
-        #elif comando == ARTICULOS_MAS_IMPORTANTES:
-
-        #elif comando == CICLO_DE_N_ARTICULOS:
+        else: None
 
 
 if __name__ == '__main__':

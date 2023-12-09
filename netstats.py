@@ -1,6 +1,6 @@
 from funciones_inicializacion import *
-from TDAS.Grafo import Grafo
-from NetStats import *
+from Grafo import *
+from comandos import *
 import sys
 
 #Lista de operaciones
@@ -17,7 +17,7 @@ CICLO_DE_N_ARTICULOS = "ciclo"
 
 
 def main(grafo):
-   for linea in sys.stdin:
+    for linea in sys.stdin:
         comando, parametros = leer_linea(linea)
 
         if comando == LISTAR_OPERACIONES:
@@ -48,22 +48,23 @@ def main(grafo):
 
         elif comando == NAVEGACION_POR_PRIMER_LINK:
             pagina = parametros
-            print(" -> ".join(navegacion(grafo, pagina)))      
+            print(" -> ".join(navegacion(grafo, pagina)))    
 
         elif comando == CONECTIVIDAD:
             pagina = parametros[0]
-            dicc_paginas = {} #yo lo que quiero hacer es crear un dicc y ir almacenando las paginas que ya pusieron anteriormente, asi dsp es o(1)
-            conectados(grafo, pagina, dicc_paginas) # pero yo lo estoy almacenando aca dentro de la funcion... esta bien?
+            dicc_paginas = dicc_paginas if "dicc_paginas" in locals() else {} 
+            conectados(grafo, pagina, dicc_paginas) 
 
         elif comando == LECTURA_A_LAS_2_AM:
             paginas = parametros #el usuario puede poner la cantidad de paginas que quiera como parametro
             lectura_orden(grafo, paginas)
-
         elif comando == COMUNIDADES:
             comunidad(grafo, pagina)
 
         elif comando == CLUSTERING:
             clustering(grafo, pagina)
+
+        else: None
 
 if __name__ == '__main__':
     stdin = sys.argv

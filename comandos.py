@@ -1,6 +1,7 @@
 from TDAS import Cola,Grafo,Pila
 from funciones_inicializacion import *
 import biblioteca
+
 #--------- Camino mas corto ---------
 def camino(grafo, origen, destino): #O(V + E)
     padre, distancia = biblioteca.bfs(grafo, origen, destino)
@@ -69,7 +70,7 @@ def conectados(grafo, pagina, dicc_paginas):
     dicc_paginas[pagina] = componente_pagina #almaceno los resultados de cfc
     print(f"Páginas conectadas a '{pagina}': {', '.join(componente_pagina)}.")
 
-#--------- lectura de 2 am ---------
+#--------- Lectura de 2 am ---------
 
 def lectura_orden(grafo, *paginas):
     """Permite obtener un orden en el que es válido leer las páginas indicados"""
@@ -82,7 +83,7 @@ def lectura_orden(grafo, *paginas):
         orden = [pagina for pagina in ordenTopologico if pagina in paginas]
         print("Orden de lectura válido: ", ", ".join(orden))
 
-#--------- comunidades ---------
+#--------- Comunidades ---------
 
 def comunidad(grafo, pagina):
     """ permite obtener la comunidad dentro de la red a la que pertenezca la página pasada por parámetro. Para esto, utilizaremos el sencillo algoritmo
@@ -94,7 +95,7 @@ def comunidad(grafo, pagina):
     else:
         print(f"No se pudo determinar la comunidad de la pagina {pagina}")
 
-#--------- coeficiente de clustering ---------
+#--------- Coeficiente de Clustering ---------
 def clustering(grafo, pagina):
     """ Permite obtener el coeficiente de clustering de la página indicada. En caso de no indicar página,
     se deberá informar el clustering promedio de la red. En ambos casos, informar con hasta 3 dígitos decimales."""
