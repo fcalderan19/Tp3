@@ -1,4 +1,4 @@
-from TDAS.Grafo import Grafo
+from Grafo import Grafo
 import sys
 
 def cargar_grafo():
@@ -19,7 +19,7 @@ def cargar_grafo():
     return grafo
 
 def leer_linea(linea):
-    terminal = terminal.rstrip().split(" ")
+    terminal = linea.rstrip().split(" ")
     comando = terminal[0]
     parametros = terminal[1:]
 

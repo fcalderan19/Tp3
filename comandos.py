@@ -57,20 +57,19 @@ def navegacion(grafo, origen): #O(V + E)
 
 #--------- Conectividad ---------
 def conectados(grafo, pagina, dicc_paginas):
-    sys.setrecursionlimit(75000)
-
+    """nos muestra todos las páginas a los que podemos llegar desde la página pasado 
+    por parámetro y que, a su vez, puedan también volver a dicha página."""
     if pagina in dicc_paginas: #como tiene que ser constante en la segunda consulta, lo vamos guardando en un dicc 
         paginas_conectadas = dicc_paginas[pagina]
         print(f"Páginas conectadas a '{pagina}': {', '.join(paginas_conectadas)}.")
-        return
-    
-    cfc = cfc_tarjan(grafo)
+        return         
+    cfc = cfc_tarjan(grafo) #devuelve una lista
     componente_pagina = None
-    for componente in cfc: #encontrar el componente al que pertenece la pagina
+    for i in range (len(cfc)): #encontrar el componente al que pertenece la pagina
+        componente = cfc[i]
         if pagina in componente:
             componente_pagina = componente
             break
-        
     if componente_pagina is None: #si la pag no esta en ninguna comp, tirar un error
         print(f"No se encontraron páginas conectadas a {pagina}.")
         return 
@@ -94,12 +93,6 @@ def comunidad(grafo, pagina):
 
 #--------- Coeficiente de Clustering ---------
 def clustering(grafo, pagina):
-    if pagina is not None:
-        clustering_pagina = calcular_clustering_pagina(grafo, pagina)
-        print(f"El coeficiente de clustering de la pagina {pagina} es:{clustering_pagina:.3f}")
-    else:
-        clustering_promedio = calcular_clustering_promedio(grafo)
-        print(f"El clustering promedio de la red es:{clustering_promedio:.3f}")
     """ Permite obtener el coeficiente de clustering de la página indicada. En caso de no indicar página,
     se deberá informar el clustering promedio de la red. En ambos casos, informar con hasta 3 dígitos decimales."""
     if pagina is not None:
@@ -140,11 +133,12 @@ def contar_aristas_vecinos(grafo: Grafo, vecinos):
 def calcular_clustering_pagina(grafo: Grafo, pagina):
     vecinos = grafo.adyacentes(pagina)
     cantidad_enlaces = contar_aristas_vecinos(grafo, vecinos)
-    g_salida = grados_salida(grafo)[pagina]
-    if g_salida < 2:
+    g_salida = grados_salida(grafo)
+    grado = g_salida[pagina]
+    if grado < 2:
         return 0.0
     else:
-        return 2.0 * cantidad_enlaces / (g_salida *(g_salida - 1))
+        return 2.0 * cantidad_enlaces / (grado *(grado - 1))
 
 def calcular_clustering_promedio(grafo: Grafo):
     """calculo el clustering promedio de la red"""

@@ -60,13 +60,14 @@ def main(grafo):
             lectura_orden(grafo, paginas)
             
         elif comando == COMUNIDADES:
+            pagina = parametros[0]
             comunidad(grafo, pagina)
 
         elif comando == CLUSTERING:
+            pagina = parametros[0]
             clustering(grafo, pagina)
 
         else: None
-
 
 if __name__ == '__main__':
     stdin = sys.argv
