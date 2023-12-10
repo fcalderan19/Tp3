@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from funciones_inicializacion import *
 from Grafo import *
 from comandos import *
@@ -15,6 +17,8 @@ COMUNIDADES = "comunidad"
 CLUSTERING = "clustering"
 ARTICULOS_MAS_IMPORTANTES = "mas_importantes"
 CICLO_DE_N_ARTICULOS = "ciclo"
+
+
 
 def main(grafo):
     for linea in sys.stdin:
@@ -36,9 +40,13 @@ def main(grafo):
                 print("Costo: ", len(recorrido) - 1)
 
         elif comando == DIAMETRO:
-            recorrido, diam = diametroRed(grafo)
-            print(" -> ".join(recorrido))
-            print("Costo: ", diam)
+            global diametro_g, diametro_recorrido
+            if diametro_g == 0 and diametro_recorrido == []:
+                diametro_recorrido = diametroRed(grafo)
+                diametro_g = len(diametro_recorrido) - 1
+            
+            print(" -> ".join(diametro_recorrido))
+            print("Costo: ", diametro_g)
 
         elif comando == TODOS_EN_RANGO:
             parametros = parametros.split(",")
@@ -57,22 +65,37 @@ def main(grafo):
 
         elif comando == LECTURA_A_LAS_2_AM:
             paginas = parametros
-            lectura_orden(grafo, paginas)
+            orden = lectura_orden(grafo, paginas)
+            if orden == None:
+                print("No existe forma de leer las paginas en orden")
+            else:
+                print(",".join(orden))
             
         elif comando == COMUNIDADES:
-            pagina = parametros[0]
             comunidad(grafo, pagina)
 
         elif comando == CLUSTERING:
-            pagina = parametros[0]
             clustering(grafo, pagina)
 
+        elif comando == CICLO_DE_N_ARTICULOS:
+            vertice = parametros[0]
+            N = parametros[1]
+            ciclo = Nciclos(grafo, vertice, N)
+            if ciclo == None:
+                print("No se encontro recorrido")
+            else:
+                print(",".join(ciclo))
+
         else: None
+
 
 if __name__ == '__main__':
     stdin = sys.argv
     #if len(stdin) != 2:
         #raise Exception("Parametros invalidos")
+
+    diametro_g = 0
+    diametro_recorrido = []
 
     grafo = Grafo(dirigido = True)
     #archivo = sys.argv[1]

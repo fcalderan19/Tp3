@@ -14,22 +14,19 @@ def camino(grafo: Grafo, origen, destino): #O(V + E)
 
 #--------- Diametro Red --------- 
 def diametroRed(grafo: Grafo): #O(V * (V + E))
-
-    distancia_max = 0
-    dist = 0
-    recorrido = []
+    distMax = 0
+    diametro = (None, None)
+    bfs_diametro = None
 
     for v in grafo.obtener_vertices():
         distancias, padres = bfs(grafo, v)
-        for distancia in padres:
-            if distancias[distancia] != None:
-                dist += distancias[distancia]
+        for w in distancias:
+            if distancias[w] != None and distancias[w] > distMax:
+                distMax = distancias[w]
+                diametro = (v, w)
+                bfs_diametro = padres
 
-        if dist > distancia_max:
-            distancia_max = dist
-            recorrido = reconstruirCamino(padres)
-
-    return recorrido, distancia_max
+    return reconstruirCamino(bfs_diametro, diametro[0], diametro[1])
 
 #--------- Todos en rango N --------- 
 def rango(grafo, p, n): #O(V + E)
@@ -57,19 +54,20 @@ def navegacion(grafo, origen): #O(V + E)
 
 #--------- Conectividad ---------
 def conectados(grafo, pagina, dicc_paginas):
-    """nos muestra todos las páginas a los que podemos llegar desde la página pasado 
-    por parámetro y que, a su vez, puedan también volver a dicha página."""
+    sys.setrecursionlimit(75000)
+
     if pagina in dicc_paginas: #como tiene que ser constante en la segunda consulta, lo vamos guardando en un dicc 
         paginas_conectadas = dicc_paginas[pagina]
         print(f"Páginas conectadas a '{pagina}': {', '.join(paginas_conectadas)}.")
-        return         
-    cfc = cfc_tarjan(grafo) #devuelve una lista
+        return
+    
+    cfc = cfc_tarjan(grafo)
     componente_pagina = None
-    for i in range (len(cfc)): #encontrar el componente al que pertenece la pagina
-        componente = cfc[i]
+    for componente in cfc: #encontrar el componente al que pertenece la pagina
         if pagina in componente:
             componente_pagina = componente
             break
+        
     if componente_pagina is None: #si la pag no esta en ninguna comp, tirar un error
         print(f"No se encontraron páginas conectadas a {pagina}.")
         return 
@@ -79,8 +77,42 @@ def conectados(grafo, pagina, dicc_paginas):
 
 #--------- Lectura de 2 am ---------
 def lectura_orden(grafo, paginas: str):
-    #cambiando cosas
-    paginas = set(paginas.split(","))
+    paginas_list = paginas.split(",")
+    paginas_set = set(paginas_list)
+    salidas = grados_salida(grafo, paginas_set)
+    entradas = padres_entrada(grafo, paginas_set)
+    cola = Cola()
+
+    for vertice in paginas_set:
+        if salidas[vertice] == 0:
+            cola.Encolar(vertice)
+
+    orden = []
+    while not cola.EstaVacia():
+        vertice = cola.Desencolar()
+        orden.append(vertice)
+        for v in entradas[vertice]:
+            if v in paginas_set:
+                salidas[v] -= 1
+                if salidas[v] == 0:
+                    cola.Encolar(v)
+
+    if len(orden) != len(paginas_list): # Hay ciclo o no hay suficientes
+        return None
+    
+    return orden
+
+def padres_entrada(grafo: Grafo, paginas: set):
+    g_ent = {}
+    for v in grafo.obtener_vertices():
+        g_ent[v] = set()
+
+    for v in grafo.obtener_vertices():
+        for w in grafo.adyacentes(v):
+            if v in paginas and w in paginas:
+                g_ent[w].add(v)
+
+    return g_ent
 
 #--------- Comunidades ---------
 def comunidad(grafo, pagina):
@@ -102,7 +134,11 @@ def clustering(grafo, pagina):
         clustering_promedio= calcular_clustering_promedio(grafo)
         print(f"El clustering promedio de la red es:{clustering_promedio:.3f}")
 
-
+#--------- Ciclo de N artículos ---------
+def Nciclos(grafo: Grafo, vertice, n):
+    visitados = set()
+    camino = []
+    return buscarCicloN(grafo, vertice, vertice, camino, visitados, n)
 
 #https://algoritmos-rw.github.io/algo2/material/apuntes/label_propagation/
 def label_propagation(grafo: Grafo):
