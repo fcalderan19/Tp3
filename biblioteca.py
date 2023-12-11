@@ -1,7 +1,7 @@
 from Cola import *
 from Grafo import *
 from Pila import *
-import random
+
 CANT_ITERACIONES = 10
 
 """
@@ -49,7 +49,7 @@ def dfs(grafo, v, visitados,  padres, distancias): #O(V + E)
 
 
 "orden topologico basado en grados de entrada"
-def orden_topologico(grafo: Grafo): #o(V+E)
+def orden_topologico(grafo: Grafo): #O(V + E)
     g_ent = grados_entrada(grafo)
     cola = Cola()
     for v in grafo.obtener_vertices():
@@ -82,11 +82,11 @@ def grados_salida(grafo:Grafo, paginas: set):
 
     for v in grafo.obtener_vertices():
         for w in grafo.adyacentes(v):
-            if w in paginas:
+            if paginas is None or w in paginas:
                 g_salida[v] += 1
     return g_salida
 
-def obtener_aristas(grafo: Grafo):#o(V+E)
+def obtener_aristas(grafo: Grafo):#O(V + E)
     aristas = []
     for v in grafo.obtener_vertices():
         for w in grafo.adyacentes(v):
@@ -97,38 +97,39 @@ def buscarCicloN(grafo: Grafo, origen, vertice_actual, camino_actual: list, visi
     if len(camino_actual) == N:
         if vertice_actual == origen:
             camino_actual.append(vertice_actual)
-            return camino_actual.copy()
+            return camino_actual
         return None
-
-    if vertice_actual == origen and len(camino_actual) != 0:
-        return None
-
-    camino_actual.append(vertice_actual)
+    
     visitados.add(vertice_actual)
+    camino_actual.append(vertice_actual)
 
-    for vecino in grafo.adyacentes(vertice_actual):
-        if vecino not in visitados or vecino == origen:
-            ciclo_encontrado = buscarCicloN(grafo, origen, vecino, camino_actual, visitados, N)
+    for w in grafo.adyacentes(vertice_actual):
+        if w not in visitados or w == origen:
+            ciclo_encontrado = buscarCicloN(grafo, origen, w, camino_actual, visitados, N)
             if ciclo_encontrado:
                 return ciclo_encontrado
+
 
     camino_actual.pop()
     visitados.remove(vertice_actual)
     return None
     
 "componentes fuertemente conexas TARJAN "
-def cfc_tarjan(grafo: Grafo): #O(V+E)
+def cfc_tarjan(grafo: Grafo): #O(V + E)
     cfc = []
     visitados = set()
-    contador_global = [0]
+    contador_global = 0
+    pila = Pila()
+    apilados = set()
     for v in grafo.obtener_vertices():
         if v not in visitados:
-            _dfs_cfc(grafo, v, visitados, {},{}, Pila(), set(), cfc,contador_global)
+            _dfs_cfc(grafo, v, visitados, {},{}, pila,apilados, cfc,contador_global)
     return cfc
 
-def _dfs_cfc(grafo: Grafo, v, visitados, orden, mas_bajo, pila: Pila, apilados, cfc, contador_global):
-    orden[v] = mas_bajo[v] = contador_global[0]
-    contador_global[0] += 1
+def _dfs_cfc(grafo: Grafo, v, visitados: set, orden, mas_bajo, pila: Pila, apilados: set, cfc: list, contador_global):
+    orden[v] = contador_global
+    mas_bajo[v] = contador_global
+    contador_global += 1
     visitados.add(v)
     pila.Apilar(v)
     apilados.add(v)
@@ -136,8 +137,9 @@ def _dfs_cfc(grafo: Grafo, v, visitados, orden, mas_bajo, pila: Pila, apilados, 
     for w in grafo.adyacentes(v):
         if w not in visitados:
             _dfs_cfc(grafo, w, visitados, orden, mas_bajo, pila, apilados, cfc, contador_global)
-        if w in apilados:
-            mas_bajo[v]= min(mas_bajo[v], mas_bajo[w])
+            mas_bajo[v] = min(mas_bajo[v], mas_bajo[w])
+        elif w in apilados:
+            mas_bajo[v]= min(mas_bajo[v], orden[w])
     
     if mas_bajo[v] == orden[v]:
         nueva_cfc = []

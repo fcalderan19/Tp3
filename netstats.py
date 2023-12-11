@@ -52,14 +52,14 @@ def main(grafo):
             parametros = parametros.split(",")
             pagina = parametros[0]
             range = parametros[1]
-            print(rango(grafo, pagina, range))
+            print(rango(grafo, pagina, int(range)))
 
         elif comando == NAVEGACION_POR_PRIMER_LINK:
-            paginas = parametros.split(",")
-            print(" -> ".join(navegacion(grafo, paginas)))    
+            pagina = parametros
+            print(" -> ".join(navegacion(grafo, pagina))) 
 
         elif comando == CONECTIVIDAD:
-            pagina = parametros[0]
+            pagina = parametros
             dicc_paginas = dicc_paginas if "dicc_paginas" in locals() else {} 
             conectados(grafo, pagina, dicc_paginas) 
 
@@ -72,19 +72,22 @@ def main(grafo):
                 print(",".join(orden))
             
         elif comando == COMUNIDADES:
+            pagina = parametros
             comunidad(grafo, pagina)
 
         elif comando == CLUSTERING:
-            clustering(grafo, pagina)
+            pagina = parametros
+            print(f"{clustering(grafo, pagina):.3f}")
 
         elif comando == CICLO_DE_N_ARTICULOS:
-            vertice = parametros[0]
-            N = parametros[1]
-            ciclo = Nciclos(grafo, vertice, N)
+            params = parametros.split(",")
+            vertice = params[0]
+            n = int(params[1])
+            ciclo = Nciclos(grafo, vertice, n)
             if ciclo == None:
                 print("No se encontro recorrido")
             else:
-                print(",".join(ciclo))
+                print(" -> ".join(ciclo))
 
         else: None
 

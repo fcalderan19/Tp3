@@ -40,7 +40,7 @@ class Grafo:
 
     def adyacentes(self, v):
         ady = []
-        if v in self.vertices:
+        if v in self.vertices.keys():
             for adyacente in self.vertices[v]:
                 ady.append(adyacente)
         return ady

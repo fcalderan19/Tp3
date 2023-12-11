@@ -3,6 +3,7 @@ from Grafo import *
 from Pila import *
 from funciones_inicializacion import *
 from biblioteca import *
+import sys
 
 #--------- Camino mas corto ---------
 def camino(grafo: Grafo, origen, destino): #O(V + E)
@@ -31,7 +32,7 @@ def diametroRed(grafo: Grafo): #O(V * (V + E))
 #--------- Todos en rango N --------- 
 def rango(grafo, p, n): #O(V + E)
     cantidad = 0
-    _, distancias = bfs(grafo, p)
+    distancias, _ = bfs(grafo, p)
     for v in distancias:
         if distancias[v] == n:
             cantidad +=1
@@ -42,10 +43,12 @@ def rango(grafo, p, n): #O(V + E)
 def navegacion(grafo, origen): #O(V + E)
     navegacion = []
     navegacion.append(origen)
+    cant_ady = len(grafo.adyacentes(origen))
 
     while len(grafo.adyacentes(origen)) > 0:
         link_actual = grafo.adyacentes(origen)[0]
         origen = link_actual
+        cant_ady = len(grafo.adyacentes(origen))
         navegacion.append(link_actual)
         if len(navegacion) == 21: #21 porque estamos appendeando el origen entonces serian 20 a partir desde el origen
             break
@@ -116,7 +119,7 @@ def padres_entrada(grafo: Grafo, paginas: set):
 
 #--------- Comunidades ---------
 def comunidad(grafo, pagina):
-    etiquetas= label_propagation(grafo)
+    etiquetas = label_propagation(grafo)
     comunidad_pagina = etiquetas.get(pagina)
     if comunidad_pagina is not None:
         print(f"La página {pagina} pertenece a la comunidad {comunidad_pagina}. ")    
@@ -128,11 +131,9 @@ def clustering(grafo, pagina):
     """ Permite obtener el coeficiente de clustering de la página indicada. En caso de no indicar página,
     se deberá informar el clustering promedio de la red. En ambos casos, informar con hasta 3 dígitos decimales."""
     if pagina is not None:
-        clustering_pagina = calcular_clustering_pagina(grafo, pagina)
-        print(f"El coeficiente de clustering de la pagina {pagina} es:{clustering_pagina:.3f}")
+        return calcular_clustering_pagina(grafo, pagina)
     else:
-        clustering_promedio= calcular_clustering_promedio(grafo)
-        print(f"El clustering promedio de la red es:{clustering_promedio:.3f}")
+        return calcular_clustering_promedio(grafo)
 
 #--------- Ciclo de N artículos ---------
 def Nciclos(grafo: Grafo, vertice, n):
@@ -150,10 +151,9 @@ def label_propagation(grafo: Grafo):
         for v in vertices:
             vecinos = grafo.adyacentes(v)
             if vecinos:
-                etiquetas_vecino= [etiquetas[w] for w in vecinos] #obtengo las etiquetas de los vecinos
-                etiquetas[v]= max(set(etiquetas_vecino), key= etiquetas_vecino.count) #asigno la etiqueta mas comun al nodo actual
+                etiquetas_vecino = [etiquetas[w] for w in vecinos] #obtengo las etiquetas de los vecinos
+                etiquetas[v] = max(set(etiquetas_vecino), key= etiquetas_vecino.count) #asigno la etiqueta mas comun al nodo actual
     return etiquetas
-
 
 def contar_aristas_vecinos(grafo: Grafo, vecinos):
     """ toma una lista de nodos vecinos y cuenta cuántas aristas existen entre esos nodos."""
@@ -165,11 +165,10 @@ def contar_aristas_vecinos(grafo: Grafo, vecinos):
                 contador += 1
     return contador 
 
-
 def calcular_clustering_pagina(grafo: Grafo, pagina):
     vecinos = grafo.adyacentes(pagina)
     cantidad_enlaces = contar_aristas_vecinos(grafo, vecinos)
-    g_salida = grados_salida(grafo)
+    g_salida = grados_salida(grafo, None)
     grado = g_salida[pagina]
     if grado < 2:
         return 0.0
@@ -187,4 +186,3 @@ def calcular_clustering_promedio(grafo: Grafo):
         return 0.0
     else: 
         return clustering_total / len(vertices)
-
