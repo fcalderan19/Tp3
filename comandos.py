@@ -3,6 +3,7 @@ from Grafo import *
 from Pila import *
 from funciones_inicializacion import *
 from biblioteca import *
+import sys
 
 #--------- Camino mas corto ---------
 def camino(grafo: Grafo, origen, destino): #O(V + E)
@@ -129,10 +130,10 @@ def clustering(grafo, pagina):
     se deberá informar el clustering promedio de la red. En ambos casos, informar con hasta 3 dígitos decimales."""
     if pagina is not None:
         clustering_pagina = calcular_clustering_pagina(grafo, pagina)
-        print(f"El coeficiente de clustering de la pagina {pagina} es:{clustering_pagina:.3f}")
+        print(f"El coeficiente de clustering de la pagina {pagina} es: {clustering_pagina:.3f}")
     else:
         clustering_promedio= calcular_clustering_promedio(grafo)
-        print(f"El clustering promedio de la red es:{clustering_promedio:.3f}")
+        print(f"El clustering promedio de la red es: {clustering_promedio:.3f}")
 
 #--------- Ciclo de N artículos ---------
 def Nciclos(grafo: Grafo, vertice, n):
@@ -187,4 +188,3 @@ def calcular_clustering_promedio(grafo: Grafo):
         return 0.0
     else: 
         return clustering_total / len(vertices)
-

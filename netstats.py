@@ -19,7 +19,6 @@ ARTICULOS_MAS_IMPORTANTES = "mas_importantes"
 CICLO_DE_N_ARTICULOS = "ciclo"
 
 
-
 def main(grafo):
     for linea in sys.stdin:
         comando, parametros = leer_linea(linea)
@@ -40,13 +39,9 @@ def main(grafo):
                 print("Costo: ", len(recorrido) - 1)
 
         elif comando == DIAMETRO:
-            global diametro_g, diametro_recorrido
-            if diametro_g == 0 and diametro_recorrido == []:
-                diametro_recorrido = diametroRed(grafo)
-                diametro_g = len(diametro_recorrido) - 1
-            
-            print(" -> ".join(diametro_recorrido))
-            print("Costo: ", diametro_g)
+            recorrido, diam = diametroRed(grafo)
+            print(" -> ".join(recorrido))
+            print("Costo: ", diam)
 
         elif comando == TODOS_EN_RANGO:
             parametros = parametros.split(",")
@@ -59,35 +54,23 @@ def main(grafo):
             print(" -> ".join(navegacion(grafo, paginas)))    
 
         elif comando == CONECTIVIDAD:
-            pagina = parametros[0]
+            pagina = parametros
             dicc_paginas = dicc_paginas if "dicc_paginas" in locals() else {} 
             conectados(grafo, pagina, dicc_paginas) 
 
         elif comando == LECTURA_A_LAS_2_AM:
             paginas = parametros
-            orden = lectura_orden(grafo, paginas)
-            if orden == None:
-                print("No existe forma de leer las paginas en orden")
-            else:
-                print(",".join(orden))
+            lectura_orden(grafo, paginas)
             
         elif comando == COMUNIDADES:
+            pagina = parametros
             comunidad(grafo, pagina)
 
         elif comando == CLUSTERING:
+            pagina = parametros
             clustering(grafo, pagina)
 
-        elif comando == CICLO_DE_N_ARTICULOS:
-            vertice = parametros[0]
-            N = parametros[1]
-            ciclo = Nciclos(grafo, vertice, N)
-            if ciclo == None:
-                print("No se encontro recorrido")
-            else:
-                print(",".join(ciclo))
-
         else: None
-
 
 if __name__ == '__main__':
     stdin = sys.argv

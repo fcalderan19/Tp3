@@ -32,5 +32,3 @@ class Cola:
 		return self.primero.dato
 
 
-
-
