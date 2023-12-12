@@ -173,7 +173,7 @@ def contar_aristas_vecinos(grafo: Grafo, vecinos):
 def calcular_clustering_pagina(grafo: Grafo, pagina):
     vecinos = grafo.adyacentes(pagina)
     cantidad_enlaces = contar_aristas_vecinos(grafo, vecinos)
-    g_salida = grados_salida(grafo)
+    g_salida = grados_salida(grafo, None)
     grado = g_salida[pagina]
     if grado < 2:
         return 0.0
