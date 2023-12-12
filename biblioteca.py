@@ -114,8 +114,9 @@ def buscarCicloN(grafo: Grafo, origen, vertice_actual, camino_actual: list, visi
     visitados.remove(vertice_actual)
     return None
     
+
 "componentes fuertemente conexas TARJAN "
-def cfc_tarjan(grafo: Grafo): #O(V + E)
+def cfc_tarjan(grafo: Grafo): #O(V+E)
     cfc = []
     visitados = set()
     contador_global = 0
@@ -126,12 +127,12 @@ def cfc_tarjan(grafo: Grafo): #O(V + E)
             _dfs_cfc(grafo, v, visitados, {},{}, pila,apilados, cfc,contador_global)
     return cfc
 
-def _dfs_cfc(grafo: Grafo, v, visitados: set, orden, mas_bajo, pila: Pila, apilados: set, cfc: list, contador_global):
+def _dfs_cfc(grafo, v, visitados, orden, mas_bajo, pila, apilados, cfc, contador_global):
     orden[v] = contador_global
     mas_bajo[v] = contador_global
     contador_global += 1
     visitados.add(v)
-    pila.Apilar(v)
+    pila.apilar(v)
     apilados.add(v)
 
     for w in grafo.adyacentes(v):
@@ -144,7 +145,7 @@ def _dfs_cfc(grafo: Grafo, v, visitados: set, orden, mas_bajo, pila: Pila, apila
     if mas_bajo[v] == orden[v]:
         nueva_cfc = []
         while True:
-            w = pila.Desapilar()
+            w = pila.desapilar()
             apilados.remove(w)
             nueva_cfc.append(w)
             if w == v:

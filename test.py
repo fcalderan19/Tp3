@@ -77,7 +77,8 @@ def main(grafo):
 
         elif comando == CLUSTERING:
             pagina = parametros
-            print(f"{clustering(grafo, pagina):.3f}")
+            clustering(grafo, pagina)
+
 
         elif comando == CICLO_DE_N_ARTICULOS:
             params = parametros.split(",")

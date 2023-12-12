@@ -119,7 +119,7 @@ def padres_entrada(grafo: Grafo, paginas: set):
 
 #--------- Comunidades ---------
 def comunidad(grafo, pagina):
-    etiquetas = label_propagation(grafo)
+    etiquetas= label_propagation(grafo)
     comunidad_pagina = etiquetas.get(pagina)
     if comunidad_pagina is not None:
         print(f"La página {pagina} pertenece a la comunidad {comunidad_pagina}. ")    
@@ -131,15 +131,19 @@ def clustering(grafo, pagina):
     """ Permite obtener el coeficiente de clustering de la página indicada. En caso de no indicar página,
     se deberá informar el clustering promedio de la red. En ambos casos, informar con hasta 3 dígitos decimales."""
     if pagina is not None:
-        return calcular_clustering_pagina(grafo, pagina)
+        clustering_pagina = calcular_clustering_pagina(grafo, pagina)
+        print(f"El coeficiente de clustering de la pagina {pagina} es: {clustering_pagina:.3f}")
     else:
-        return calcular_clustering_promedio(grafo)
+        clustering_promedio= calcular_clustering_promedio(grafo)
+        print(f"El clustering promedio de la red es: {clustering_promedio:.3f}")
+
 
 #--------- Ciclo de N artículos ---------
 def Nciclos(grafo: Grafo, vertice, n):
     visitados = set()
     camino = []
     return buscarCicloN(grafo, vertice, vertice, camino, visitados, n)
+
 
 #https://algoritmos-rw.github.io/algo2/material/apuntes/label_propagation/
 def label_propagation(grafo: Grafo):
@@ -151,8 +155,8 @@ def label_propagation(grafo: Grafo):
         for v in vertices:
             vecinos = grafo.adyacentes(v)
             if vecinos:
-                etiquetas_vecino = [etiquetas[w] for w in vecinos] #obtengo las etiquetas de los vecinos
-                etiquetas[v] = max(set(etiquetas_vecino), key= etiquetas_vecino.count) #asigno la etiqueta mas comun al nodo actual
+                etiquetas_vecino= [etiquetas[w] for w in vecinos] #obtengo las etiquetas de los vecinos
+                etiquetas[v]= max(set(etiquetas_vecino), key= etiquetas_vecino.count) #asigno la etiqueta mas comun al nodo actual
     return etiquetas
 
 def contar_aristas_vecinos(grafo: Grafo, vecinos):
@@ -165,10 +169,11 @@ def contar_aristas_vecinos(grafo: Grafo, vecinos):
                 contador += 1
     return contador 
 
+
 def calcular_clustering_pagina(grafo: Grafo, pagina):
     vecinos = grafo.adyacentes(pagina)
     cantidad_enlaces = contar_aristas_vecinos(grafo, vecinos)
-    g_salida = grados_salida(grafo, None)
+    g_salida = grados_salida(grafo)
     grado = g_salida[pagina]
     if grado < 2:
         return 0.0
