@@ -61,7 +61,7 @@ def conectados(grafo, pagina, dicc_paginas):
 
     if pagina in dicc_paginas: #como tiene que ser constante en la segunda consulta, lo vamos guardando en un dicc 
         paginas_conectadas = dicc_paginas[pagina]
-        print(f"Páginas conectadas a '{pagina}': {', '.join(paginas_conectadas)}.")
+        print(f"{', '.join(paginas_conectadas)}.")
         return
     
     cfc = cfc_tarjan(grafo)
@@ -76,7 +76,7 @@ def conectados(grafo, pagina, dicc_paginas):
         return 
 
     dicc_paginas[pagina] = componente_pagina #almaceno los resultados de cfc
-    print(f"Páginas conectadas a '{pagina}': {', '.join(componente_pagina)}.")
+    print(f"{', '.join(componente_pagina)}.")
 
 #--------- Lectura de 2 am ---------
 def lectura_orden(grafo, paginas: str):
@@ -122,7 +122,7 @@ def comunidad(grafo, pagina):
     etiquetas= label_propagation(grafo)
     comunidad_pagina = etiquetas.get(pagina)
     if comunidad_pagina is not None:
-        print(f"La página {pagina} pertenece a la comunidad {comunidad_pagina}. ")    
+        print(f"comunidad {comunidad_pagina}. ")    
     else:
         print(f"No se pudo determinar la comunidad de la pagina {pagina}")
 
@@ -131,11 +131,14 @@ def clustering(grafo, pagina):
     """ Permite obtener el coeficiente de clustering de la página indicada. En caso de no indicar página,
     se deberá informar el clustering promedio de la red. En ambos casos, informar con hasta 3 dígitos decimales."""
     if pagina is not None:
+        if not esta_pagina(grafo, pagina):
+            print(f"{pagina} no esta en el grafo")
+            return
         clustering_pagina = calcular_clustering_pagina(grafo, pagina)
-        print(f"El coeficiente de clustering de la pagina {pagina} es: {clustering_pagina:.3f}")
+        print(f"{clustering_pagina:.3f}")
     else:
         clustering_promedio= calcular_clustering_promedio(grafo)
-        print(f"El clustering promedio de la red es: {clustering_promedio:.3f}")
+        print(f"{clustering_promedio:.3f}")
 
 
 #--------- Ciclo de N artículos ---------
@@ -159,26 +162,30 @@ def label_propagation(grafo: Grafo):
                 etiquetas[v]= max(set(etiquetas_vecino), key= etiquetas_vecino.count) #asigno la etiqueta mas comun al nodo actual
     return etiquetas
 
-def contar_aristas_vecinos(grafo: Grafo, vecinos):
-    """ toma una lista de nodos vecinos y cuenta cuántas aristas existen entre esos nodos."""
+def contar_aristas_vecinos(grafo: Grafo, vertice):
     contador = 0
+    for w in grafo.adyacentes(vertice):
+        if grafo.estan_unidos(vertice, w):
+            contador += 1
+        if grafo.estan_unidos(w, vertice):
+            contador += 1
 
-    for i in range (len(vecinos)):
-        for j in range(i+1, len(vecinos)):
-            if grafo.estan_unidos(vecinos[i], vecinos[j]):
-                contador += 1
     return contador 
 
+def esta_pagina(grafo, pagina):
+    for v in grafo.obtener_vertices():
+        if v == pagina:
+            return True
+    return False
 
 def calcular_clustering_pagina(grafo: Grafo, pagina):
-    vecinos = grafo.adyacentes(pagina)
-    cantidad_enlaces = contar_aristas_vecinos(grafo, vecinos)
+    cantidad_enlaces = contar_aristas_vecinos(grafo, pagina)
     g_salida = grados_salida(grafo, None)
     grado = g_salida[pagina]
     if grado < 2:
         return 0.0
     else:
-        return 2.0 * cantidad_enlaces / (grado *(grado - 1))
+        return cantidad_enlaces / (grado *(grado - 1))
 
 def calcular_clustering_promedio(grafo: Grafo):
     """calculo el clustering promedio de la red"""
