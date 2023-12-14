@@ -134,7 +134,7 @@ def calcular_clustering_pagina(grafo: Grafo, pagina)->float:
     if grado < 2:
         return 0.0
     else:
-        return float(format(cantidad_enlaces / (grado * (grado - 1))))
+        return float(cantidad_enlaces / (grado * (grado - 1)))
 
 def calcular_clustering_promedio(grafo: Grafo):
     """calculo el clustering promedio de la red"""
@@ -146,4 +146,4 @@ def calcular_clustering_promedio(grafo: Grafo):
     if not vertices:
         return 0.0
     else: 
-        return clustering_total / len(vertices)
+        return float(clustering_total / len(vertices))
