@@ -16,10 +16,10 @@ class Cola:
 		nuevo = _Nodo(dato)
 		if self.ultimo is None:
 			self.primero = nuevo
-			self.ultimo = nuevo
 		else:
 			self.ultimo.prox = nuevo
-			self.ultimo = nuevo
+			
+		self.ultimo = nuevo
 
 	def Desencolar(self):
 		dato = self.primero.dato
@@ -30,5 +30,3 @@ class Cola:
 
 	def VerPrimero(self):
 		return self.primero.dato
-
-

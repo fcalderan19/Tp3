@@ -11,6 +11,21 @@ def leer_linea(linea):
 
     return comando, None
 
+def archivo_a_grafo(archivo: str, grafo:Grafo)-> Grafo:
+    with open(archivo, 'r') as tsv:
+        for line in tsv:
+            line = line.rstrip("\n")
+            datos = line.split('\t')
+            articulo = datos[0]
+            links = datos[1:]
+            if not grafo.verticeExistente(articulo):
+                grafo.agregar_vertice(articulo)
+            for link in links:
+                if not grafo.verticeExistente(link):
+                    grafo.agregar_vertice(link)
+                if not grafo.estan_unidos(articulo, link):
+                    grafo.agregar_arista(articulo, link, 1)
+    return grafo
 
 def listado_operaciones():
     print("camino")

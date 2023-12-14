@@ -13,40 +13,16 @@ def camino(grafo: Grafo, origen, destino): #O(V + E)
         return reconstruirCamino(padres, origen, destino)
     return None
 
-#--------- Diametro Red --------- 
-def diametroRed(grafo: Grafo): #O(V * (V + E))
-    distMax = 0
-    diametro = (None, None)
-    bfs_diametro = None
-
-    for v in grafo.obtener_vertices():
-        distancias, padres = bfs(grafo, v)
-        for w in distancias:
-            if distancias[w] != None and distancias[w] > distMax:
-                distMax = distancias[w]
-                diametro = (v, w)
-                bfs_diametro = padres
-
-    return reconstruirCamino(bfs_diametro, diametro[0], diametro[1])
-
-#--------- Todos en rango N --------- 
-def rango(grafo, p, n): #O(V + E)
-    cantidad = 0
-    _, distancias = bfs(grafo, p)
-    for v in distancias:
-        if distancias[v] == n:
-            cantidad +=1
-
-    return cantidad
-
 #--------- Navegacion por primer link --------- 
 def navegacion(grafo, origen): #O(V + E)
     navegacion = []
     navegacion.append(origen)
+    cant_ady = len(grafo.adyacentes(origen))
 
     while len(grafo.adyacentes(origen)) > 0:
         link_actual = grafo.adyacentes(origen)[0]
         origen = link_actual
+        cant_ady = len(grafo.adyacentes(origen))
         navegacion.append(link_actual)
         if len(navegacion) == 21: #21 porque estamos appendeando el origen entonces serian 20 a partir desde el origen
             break
@@ -116,11 +92,12 @@ def padres_entrada(grafo: Grafo, paginas: set):
     return g_ent
 
 #--------- Comunidades ---------
-def comunidad(grafo, pagina):
-    etiquetas= label_propagation(grafo)
+def comunidad(grafo, pagina:str):
+    etiquetas = label_propagation(grafo)
     comunidad_pagina = etiquetas.get(pagina)
+    
     if comunidad_pagina is not None:
-        print(f"La página {pagina} pertenece a la comunidad {comunidad_pagina}. ")    
+        print(",".join(map(str, comunidad_pagina)))
     else:
         print(f"No se pudo determinar la comunidad de la pagina {pagina}")
 
@@ -129,11 +106,9 @@ def clustering(grafo, pagina):
     """ Permite obtener el coeficiente de clustering de la página indicada. En caso de no indicar página,
     se deberá informar el clustering promedio de la red. En ambos casos, informar con hasta 3 dígitos decimales."""
     if pagina is not None:
-        clustering_pagina = calcular_clustering_pagina(grafo, pagina)
-        print(f"El coeficiente de clustering de la pagina {pagina} es: {clustering_pagina:.3f}")
+        print(f"{calcular_clustering_pagina(grafo, pagina):.3f}")
     else:
-        clustering_promedio= calcular_clustering_promedio(grafo)
-        print(f"El clustering promedio de la red es: {clustering_promedio:.3f}")
+        print(f"{calcular_clustering_promedio(grafo):.3f}")
 
 #--------- Ciclo de N artículos ---------
 def Nciclos(grafo: Grafo, vertice, n):
@@ -141,41 +116,25 @@ def Nciclos(grafo: Grafo, vertice, n):
     camino = []
     return buscarCicloN(grafo, vertice, vertice, camino, visitados, n)
 
-#https://algoritmos-rw.github.io/algo2/material/apuntes/label_propagation/
-def label_propagation(grafo: Grafo):
-    etiquetas = {v : v for v in grafo.obtener_vertices()}
-    for _ in range (CANT_ITERACIONES):
-        vertices = list(grafo.obtener_vertices())
-        random.shuffle(vertices)
-
-        for v in vertices:
-            vecinos = grafo.adyacentes(v)
-            if vecinos:
-                etiquetas_vecino= [etiquetas[w] for w in vecinos] #obtengo las etiquetas de los vecinos
-                etiquetas[v]= max(set(etiquetas_vecino), key= etiquetas_vecino.count) #asigno la etiqueta mas comun al nodo actual
-    return etiquetas
-
-
-def contar_aristas_vecinos(grafo: Grafo, vecinos):
+def contar_aristas_vecinos(grafo: Grafo, vecinos, pagina):
     """ toma una lista de nodos vecinos y cuenta cuántas aristas existen entre esos nodos."""
     contador = 0
 
-    for i in range (len(vecinos)):
-        for j in range(i+1, len(vecinos)):
-            if grafo.estan_unidos(vecinos[i], vecinos[j]):
+    for i in vecinos:
+        for j in vecinos:
+            if grafo.estan_unidos(i,j) and i != pagina and j != pagina:
                 contador += 1
     return contador 
 
-
-def calcular_clustering_pagina(grafo: Grafo, pagina):
+def calcular_clustering_pagina(grafo: Grafo, pagina)->float:
     vecinos = grafo.adyacentes(pagina)
-    cantidad_enlaces = contar_aristas_vecinos(grafo, vecinos)
-    g_salida = grados_salida(grafo)
+    cantidad_enlaces = contar_aristas_vecinos(grafo, vecinos, pagina)
+    g_salida = grados_salida(grafo, None)
     grado = g_salida[pagina]
     if grado < 2:
         return 0.0
     else:
-        return 2.0 * cantidad_enlaces / (grado *(grado - 1))
+        return float(format(cantidad_enlaces / (grado * (grado - 1))))
 
 def calcular_clustering_promedio(grafo: Grafo):
     """calculo el clustering promedio de la red"""

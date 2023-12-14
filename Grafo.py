@@ -14,23 +14,31 @@ class Grafo:
             self.vertices[v][w] = peso
             if not self.dirigido:
                 self.vertices[w][v] = peso
+        elif v in self.vertices:
+            raise NameError (f"No se pudo agregar la arista debido a que {w} no existe")
+        elif w in self.vertices:
+            raise NameError (f"No se pudo agregar la arista debido a que {v} no existe")
 
     def borrar_vertice(self, v):
         if v in self.vertices:
             del self.vertices[v]
 
-        for vertice in self.vertices:
-            adyacentes = self.vertices[vertice]
+            for adyacentes in self.vertices.values():
+                adyacentes_ = dict(adyacentes)
+                for adyacente in adyacentes_.keys():
+                    if adyacente == v:
+                        del adyacentes[adyacente]
+        else:
+            raise NameError (f"No se pudo borrar {v} debido a que no existe")
 
-        for adyacente in adyacentes:
-            if adyacente == v:
-                del adyacentes[adyacente]
 
     def borrar_arista(self, v, w):
         if v in self.vertices and w in self.vertices:
-            del self.aristas[v][w]
+            del self.vertices[v][w]
             if not self.dirigido:
                 del self.vertices[w][v]
+        else:
+            raise NameError (f"No se pudo borrar debido a que no existe la arista entre {v} y {w}")
 
     def obtener_vertices(self):
         verticesTotales = []
@@ -40,7 +48,7 @@ class Grafo:
 
     def adyacentes(self, v):
         ady = []
-        if v in self.vertices:
+        if v in self.vertices.keys():
             for adyacente in self.vertices[v]:
                 ady.append(adyacente)
         return ady
@@ -49,21 +57,13 @@ class Grafo:
         return w in self.vertices[v]
     
     def peso_arista(self, v, w):
-        if self.estan_unidos:
+        if self.estan_unidos(v, w):
             return self.vertices[v][w]
+        raise NameError (f"No se pudo obtener el peso debido a que no existe la arista entre {v} y {w}")
     
     def vertice_aleatorio(self):
         return random.choice(self.vertices)
     
     def verticeExistente(self, v):
         return v in self.vertices
-    
-
-    
-    
-    
-
-    
-
-
     
